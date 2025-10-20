@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 //
 import 'screens/home_page.dart';
+import 'screens/playlist_summary_page.dart';
 import 'screens/song_details.dart';
 import 'repository/songs_repository_dummy_impl.dart';
 import 'repository/songs_repository.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/songDetails': (context) => const SongDetails(),
+        '/playlistSummary': (context) => const PlaylistSummaryPage(),
       },
     );
   }
