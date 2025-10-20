@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:musix/repository/songs_repository.dart';
 import 'repository/songs_repository_dummy_impl.dart';
 import 'package:flutter/material.dart';
-import 'package:musix/home_page.dart';
+import 'package:musix/screens/home_page.dart';
 
 void main() {
   GetIt.instance.registerSingleton<SongsRepository>(SongsRepositoryDummyImpl());

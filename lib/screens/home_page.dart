@@ -1,8 +1,8 @@
 // lib/features/home/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import '../../data/song.dart';
-import '../../repository/songs_repository.dart';
+import '../../../data/song.dart';
+import '../../../repository/songs_repository.dart';
 
 // Enum pour gérer le type de tri de manière claire
 enum SortType { title, artist, duration }
@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _sortSongs() {
-    // La logique de tri reste la même
     switch (_sortType) {
       case SortType.title:
         _songs.sort((a, b) => a.title.compareTo(b.title));
@@ -60,7 +59,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- SECTION "SORT BY" (MISE À JOUR) ---
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Column(
@@ -68,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text("Sort by", style: textTheme.headlineSmall),
                   const SizedBox(height: 8),
-                  // Le nouveau widget SegmentedButton
+
                   SegmentedButton<SortType>(
                     segments: const <ButtonSegment<SortType>>[
                       ButtonSegment(
@@ -99,13 +97,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // --- LE RESTE DU CODE RESTE INCHANGÉ ---
             Text("Songs", style: textTheme.headlineSmall),
             const SizedBox(height: 8),
 
             Expanded(
               child: ListView.builder(
-                // ... (votre code ListView.builder existant)
                 itemCount: _songs.length,
                 itemBuilder: (context, index) {
                   final song = _songs[index];
