@@ -105,18 +105,27 @@ class _HomePageState extends State<HomePage> {
                 itemCount: _songs.length,
                 itemBuilder: (context, index) {
                   final song = _songs[index];
-                  return CheckboxListTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Text('${song.title} - ${song.artist}'),
-                    secondary: Text(
-                      '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}',
-                    ),
-                    value: song.isSelected,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        song.isSelected = value ?? false;
-                      });
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/songDetails',
+                        arguments: song,
+                      );
                     },
+                    child: CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text('${song.title} - ${song.artist}'),
+                      secondary: Text(
+                        '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                      ),
+                      value: song.isSelected,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          song.isSelected = value ?? false;
+                        });
+                      },
+                    ),
                   );
                 },
               ),

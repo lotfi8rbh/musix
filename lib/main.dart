@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
-import 'package:musix/repository/songs_repository.dart';
-import 'repository/songs_repository_dummy_impl.dart';
 import 'package:flutter/material.dart';
-import 'package:musix/screens/home_page.dart';
+//
+import 'screens/home_page.dart';
+import 'screens/song_details.dart';
+import 'repository/songs_repository_dummy_impl.dart';
+import 'repository/songs_repository.dart';
 
 void main() {
   GetIt.instance.registerSingleton<SongsRepository>(SongsRepositoryDummyImpl());
@@ -35,7 +37,11 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 16),
         ),
       ),
-      home: const HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomePage(),
+        '/songDetails': (context) => const SongDetails(),
+      },
     );
   }
 }
