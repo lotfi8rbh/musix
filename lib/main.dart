@@ -18,11 +18,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Musix',
       theme: ThemeData(
-        // Palette de couleurs (optionnel, mais recommandé) [cite: 911]
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // Palette de couleurs principale
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 255, 255, 255),
+        ),
         useMaterial3: true,
 
-        // C'est ici que l'on définit les styles de texte [cite: 912]
         textTheme: const TextTheme(
           // Style pour les titres de section comme "Sort by" et "Songs"
           headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 16),
         ),
       ),
-      home: const HomePage(), // Votre page d'accueil
+      home: const HomePage(),
     );
   }
 }
