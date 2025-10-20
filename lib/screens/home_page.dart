@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   final SongsRepository songsRepository = GetIt.instance<SongsRepository>();
 
   late List<Song> _songs;
-  // L'état du tri est maintenant un Set, comme requis par SegmentedButton
   SortType _sortType = SortType.title;
 
   @override
@@ -66,7 +65,6 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text("Sort by", style: textTheme.headlineSmall),
                   const SizedBox(height: 8),
-
                   SegmentedButton<SortType>(
                     segments: const <ButtonSegment<SortType>>[
                       ButtonSegment(
@@ -82,12 +80,9 @@ class _HomePageState extends State<HomePage> {
                         label: Text('duration'),
                       ),
                     ],
-                    // Le `selected` attend un Set, même pour une sélection unique
                     selected: <SortType>{_sortType},
-                    // `onSelectionChanged` remplace tous les `onChanged` individuels
                     onSelectionChanged: (Set<SortType> newSelection) {
                       setState(() {
-                        // On prend le premier (et unique) élément du Set
                         _sortType = newSelection.first;
                         _sortSongs();
                       });
@@ -96,16 +91,14 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
             Text("Songs", style: textTheme.headlineSmall),
             const SizedBox(height: 8),
-
             Expanded(
               child: ListView.builder(
                 itemCount: _songs.length,
                 itemBuilder: (context, index) {
                   final song = _songs[index];
-                  return GestureDetector(
+                  return ListTile(
                     onTap: () {
                       Navigator.pushNamed(
                         context,
@@ -113,12 +106,7 @@ class _HomePageState extends State<HomePage> {
                         arguments: song,
                       );
                     },
-                    child: CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text('${song.title} - ${song.artist}'),
-                      secondary: Text(
-                        '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}',
-                      ),
+                    leading: Checkbox(
                       value: song.isSelected,
                       onChanged: (bool? value) {
                         setState(() {
@@ -126,15 +114,17 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                     ),
+                    title: Text('${song.title} - ${song.artist}'),
+                    trailing: Text(
+                      '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                    ),
                   );
                 },
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Column(
-                // ... (votre code pour la durée totale et le bouton)
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: _totalDuration == Duration.zero
                           ? null
                           : () {
-                              // TODO: Gérer la navigation
+                              // TODO: Gérer la navigation pour le bouton "Let's go"
                             },
                       child: const Text("Let's go"),
                     ),

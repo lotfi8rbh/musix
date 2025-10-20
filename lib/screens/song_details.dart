@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../data/song.dart'; // Assurez-vous que le chemin est correct
+import '../data/song.dart';
 
 class SongDetails extends StatelessWidget {
   const SongDetails({super.key});
@@ -23,7 +23,7 @@ class SongDetails extends StatelessWidget {
               // 2. IMAGE DE L'ALBUM
               Center(
                 child: Image.asset(
-                  '../../assets/Letitbleed.jpg',
+                  song.albumArtPath,
                   height: 200,
                   width: 200,
                   fit: BoxFit.cover,

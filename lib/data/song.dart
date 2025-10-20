@@ -3,6 +3,7 @@ class Song {
   final String artist;
   final Duration duration;
   final String album;
+  final String albumArtPath;
   bool isSelected;
 
   Song({
@@ -10,6 +11,7 @@ class Song {
     required this.artist,
     required this.duration,
     required this.album,
+    required this.albumArtPath,
     this.isSelected = false,
   });
 }
