@@ -140,7 +140,14 @@ class _HomePageState extends State<HomePage> {
                       onPressed: _totalDuration == Duration.zero
                           ? null
                           : () {
-                              // TODO: Gérer la navigation pour le bouton "Let's go"
+                              final List<Song> selectedSongs = _songs
+                                  .where((song) => song.isSelected)
+                                  .toList();
+                              Navigator.pushNamed(
+                                context,
+                                '/playlistSummary',
+                                arguments: selectedSongs,
+                              );
                             },
                       child: const Text("Let's go"),
                     ),
