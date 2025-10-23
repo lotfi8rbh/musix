@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../data/song.dart';
 
 class PlaylistSummaryPage extends StatelessWidget {
@@ -6,7 +7,6 @@ class PlaylistSummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // On récupère la liste des chansons sélectionnées passée en argument
     final List<Song> selectedSongs =
         ModalRoute.of(context)!.settings.arguments as List<Song>;
 
@@ -17,29 +17,29 @@ class PlaylistSummaryPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 1. La liste des titres des chansons
             Expanded(
               child: ListView.builder(
                 itemCount: selectedSongs.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    // On n'affiche que le titre de la chanson
-                    title: Text(selectedSongs[index].title),
-                  );
+                  return ListTile(title: Text(selectedSongs[index].title));
                 },
               ),
             ),
 
-            // 2. Le bouton pour partager
             ElevatedButton(
               onPressed: () {
-                // TODO: Logique pour le partage (prochaine étape)
+                // On prépare la chaîne de caractères à partager
+                final songTitles = selectedSongs
+                    .map((song) => song.title)
+                    .toList();
+                final String textToShare = songTitles.join('\n');
+
+                Share.share(textToShare, subject: 'My Awesome Playlist');
               },
               child: const Text("Send to music app"),
             ),
             const SizedBox(height: 16),
 
-            // 3. L'image décorative
             Image.asset('assets/note.png', height: 100),
           ],
         ),
