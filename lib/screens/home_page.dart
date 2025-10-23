@@ -1,8 +1,8 @@
 // lib/features/home/home_page.dart
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import '../../../data/song.dart';
-import '../../../repository/songs_repository.dart';
+import '../../../state/playlist_manager.dart';
 
 // Enum pour gérer le type de tri de manière claire
 enum SortType { title, artist, duration }
@@ -15,41 +15,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final SongsRepository songsRepository = GetIt.instance<SongsRepository>();
-
-  late List<Song> _songs;
+  // L'état du tri est toujours géré localement dans cette page
   SortType _sortType = SortType.title;
 
-  @override
-  void initState() {
-    super.initState();
-    _songs = songsRepository.getSongs();
-    _sortSongs();
-  }
-
-  Duration get _totalDuration {
-    return _songs
-        .where((song) => song.isSelected)
-        .fold(Duration.zero, (prev, song) => prev + song.duration);
-  }
-
-  void _sortSongs() {
+  // La logique de tri est maintenant une fonction qui prend la liste en paramètre
+  void _sortSongs(List<Song> songs) {
     switch (_sortType) {
       case SortType.title:
-        _songs.sort((a, b) => a.title.compareTo(b.title));
+        songs.sort((a, b) => a.title.compareTo(b.title));
         break;
       case SortType.artist:
-        _songs.sort((a, b) => a.artist.compareTo(b.artist));
+        songs.sort((a, b) => a.artist.compareTo(b.artist));
         break;
       case SortType.duration:
-        _songs.sort((a, b) => a.duration.compareTo(b.duration));
+        songs.sort((a, b) => a.duration.compareTo(b.duration));
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // On récupère le manager via Provider
+    final playlistManager = context.watch<PlaylistManager>();
+
+    // On récupère la liste des chansons depuis le manager
+    final List<Song> songs = playlistManager.songs;
+
+    // On trie la liste à chaque reconstruction
+    _sortSongs(songs);
+
     final textTheme = Theme.of(context).textTheme;
+
+    // Calcul de la durée totale basé sur la liste du manager
+    final totalDuration = songs
+        .where((song) => song.isSelected)
+        .fold(Duration.zero, (prev, song) => prev + song.duration);
 
     return Scaffold(
       appBar: AppBar(title: const Text("Compose your playlist")),
@@ -84,7 +84,6 @@ class _HomePageState extends State<HomePage> {
                     onSelectionChanged: (Set<SortType> newSelection) {
                       setState(() {
                         _sortType = newSelection.first;
-                        _sortSongs();
                       });
                     },
                   ),
@@ -95,9 +94,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
-                itemCount: _songs.length,
+                itemCount: songs.length,
                 itemBuilder: (context, index) {
-                  final song = _songs[index];
+                  final song = songs[index];
                   return ListTile(
                     onTap: () {
                       Navigator.pushNamed(
@@ -109,6 +108,8 @@ class _HomePageState extends State<HomePage> {
                     leading: Checkbox(
                       value: song.isSelected,
                       onChanged: (bool? value) {
+                        // On doit maintenant mettre à jour l'état dans le manager.
+                        // Pour l'instant, on le fait directement :)
                         setState(() {
                           song.isSelected = value ?? false;
                         });
@@ -130,17 +131,17 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Total duration"),
-                      Text("${_totalDuration.inMinutes} minutes"),
+                      Text("${totalDuration.inMinutes} minutes"),
                     ],
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _totalDuration == Duration.zero
+                      onPressed: totalDuration == Duration.zero
                           ? null
                           : () {
-                              final List<Song> selectedSongs = _songs
+                              final List<Song> selectedSongs = songs
                                   .where((song) => song.isSelected)
                                   .toList();
                               Navigator.pushNamed(

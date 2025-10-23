@@ -1,15 +1,26 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 //
 import 'screens/home_page.dart';
 import 'screens/playlist_summary_page.dart';
 import 'screens/song_details.dart';
 import 'repository/songs_repository_dummy_impl.dart';
 import 'repository/songs_repository.dart';
+import './state/playlist_manager.dart';
 
 void main() {
+  // On garde GetIt pour l'injection initiale du repository dans le manager
   GetIt.instance.registerSingleton<SongsRepository>(SongsRepositoryDummyImpl());
-  runApp(const MyApp());
+
+  runApp(
+    // On enveloppe toute l'application dans le ChangeNotifierProvider
+    // pour que le PlaylistManager soit accessible partout.
+    ChangeNotifierProvider(
+      create: (context) => PlaylistManager(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,26 +29,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Musix',
       theme: ThemeData(
-        // Palette de couleurs principale
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 255, 255, 255),
         ),
         useMaterial3: true,
-
         textTheme: const TextTheme(
-          // Style pour les titres de section comme "Sort by" et "Songs"
           headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-
-          // Style pour le corps du texte (titres de chansons, etc.)
           bodyLarge: TextStyle(fontSize: 16),
-
-          // Style pour le texte à côté des radios
           bodyMedium: TextStyle(fontSize: 16),
         ),
       ),
+
+      // Définition de la route de démarrage et de toutes les routes de l'application
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
