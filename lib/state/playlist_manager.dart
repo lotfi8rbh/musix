@@ -11,15 +11,15 @@ class PlaylistManager extends ChangeNotifier {
     _songs = _songsRepository.getSongs();
   }
 
-  // Permet aux widgets d'accéder à la liste des chansons
   List<Song> get songs => _songs;
 
-  // Méthode pour mettre à jour une chanson
+  // ON AJOUTE newDuration ICI
   void updateSong(
     Song originalSong, {
     String? newTitle,
     String? newArtist,
     String? newAlbum,
+    Duration? newDuration,
   }) {
     final index = _songs.indexOf(originalSong);
     if (index != -1) {
@@ -28,10 +28,11 @@ class PlaylistManager extends ChangeNotifier {
         title: newTitle ?? oldSong.title,
         artist: newArtist ?? oldSong.artist,
         album: newAlbum ?? oldSong.album,
-        duration: oldSong.duration,
+        duration: newDuration ?? oldSong.duration, // <-- ON L'UTILISE ICI
         albumArtPath: oldSong.albumArtPath,
         isSelected: oldSong.isSelected,
       );
+
       notifyListeners();
     }
   }

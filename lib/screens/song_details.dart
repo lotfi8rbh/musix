@@ -12,26 +12,28 @@ class SongDetails extends StatefulWidget {
 }
 
 class _SongDetailsState extends State<SongDetails> {
-  // On déclare les variables ici pour qu'elles soient accessibles dans toute la classe
   late Song song;
   late TextEditingController _titleController;
   late TextEditingController _artistController;
   late TextEditingController _albumController;
-  bool _isInitialized =
-      false; // Une sécurité pour n'initialiser qu'une seule fois
+  late TextEditingController
+  _durationController; // <-- CONTRÔLEUR POUR LA DURÉE
+  bool _isInitialized = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // On vérifie si les données ont déjà été initialisées
     if (!_isInitialized) {
-      // C'est ici qu'on peut utiliser le context en toute sécurité
       song = ModalRoute.of(context)!.settings.arguments as Song;
 
-      // On initialise les contrôleurs avec les données de la chanson
       _titleController = TextEditingController(text: song.title);
       _artistController = TextEditingController(text: song.artist);
       _albumController = TextEditingController(text: song.album);
+
+      // On initialise le contrôleur de durée avec le bon format "minutes:secondes"
+      final String durationString =
+          '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}';
+      _durationController = TextEditingController(text: durationString);
 
       _isInitialized = true;
     }
@@ -42,6 +44,7 @@ class _SongDetailsState extends State<SongDetails> {
     _titleController.dispose();
     _artistController.dispose();
     _albumController.dispose();
+    _durationController.dispose(); // <-- N'OUBLIEZ PAS DE LE DISPOSE
     super.dispose();
   }
 
@@ -57,6 +60,7 @@ class _SongDetailsState extends State<SongDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ... (Image.asset, etc.)
               Center(
                 child: Image.asset(
                   song.albumArtPath,
@@ -91,11 +95,35 @@ class _SongDetailsState extends State<SongDetails> {
                 },
               ),
               const SizedBox(height: 16),
+              // --- CHAMP DURÉE MAINTENANT MODIFIABLE ---
               TextFormField(
-                initialValue:
-                    '${song.duration.inMinutes}:${(song.duration.inSeconds % 60).toString().padLeft(2, '0')}',
-                decoration: const InputDecoration(labelText: 'Duration'),
-                enabled: false,
+                controller: _durationController,
+                decoration: const InputDecoration(
+                  labelText: 'Duration (mm:ss)',
+                ),
+                keyboardType:
+                    TextInputType.datetime, // Affiche un clavier adapté
+                onChanged: (newDurationText) {
+                  // On essaie de convertir le texte en Duration
+                  try {
+                    final parts = newDurationText.split(':');
+                    if (parts.length == 2) {
+                      final minutes = int.parse(parts[0]);
+                      final seconds = int.parse(parts[1]);
+                      final newDuration = Duration(
+                        minutes: minutes,
+                        seconds: seconds,
+                      );
+                      playlistManager.updateSong(
+                        song,
+                        newDuration: newDuration,
+                      );
+                    }
+                  } catch (e) {
+                    // Si le format est incorrect (ex: "5:abc"), on ne fait rien
+                    // On pourrait afficher un message d'erreur ici
+                  }
+                },
               ),
             ],
           ),
