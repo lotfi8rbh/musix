@@ -13,7 +13,6 @@ class PlaylistManager extends ChangeNotifier {
 
   List<Song> get songs => _songs;
 
-  // ON AJOUTE newDuration ICI
   void updateSong(
     Song originalSong, {
     String? newTitle,
@@ -28,7 +27,7 @@ class PlaylistManager extends ChangeNotifier {
         title: newTitle ?? oldSong.title,
         artist: newArtist ?? oldSong.artist,
         album: newAlbum ?? oldSong.album,
-        duration: newDuration ?? oldSong.duration, // <-- ON L'UTILISE ICI
+        duration: newDuration ?? oldSong.duration,
         albumArtPath: oldSong.albumArtPath,
         isSelected: oldSong.isSelected,
       );

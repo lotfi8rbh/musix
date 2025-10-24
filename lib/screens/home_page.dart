@@ -1,4 +1,3 @@
-// lib/features/home/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../data/song.dart';
@@ -108,8 +107,6 @@ class _HomePageState extends State<HomePage> {
                     leading: Checkbox(
                       value: song.isSelected,
                       onChanged: (bool? value) {
-                        // On doit maintenant mettre à jour l'état dans le manager.
-                        // Pour l'instant, on le fait directement :)
                         setState(() {
                           song.isSelected = value ?? false;
                         });

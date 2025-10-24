@@ -1,4 +1,3 @@
-// lib/features/details/song_details.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../data/song.dart';
@@ -44,7 +43,7 @@ class _SongDetailsState extends State<SongDetails> {
     _titleController.dispose();
     _artistController.dispose();
     _albumController.dispose();
-    _durationController.dispose(); // <-- N'OUBLIEZ PAS DE LE DISPOSE
+    _durationController.dispose();
     super.dispose();
   }
 
@@ -60,7 +59,6 @@ class _SongDetailsState extends State<SongDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ... (Image.asset, etc.)
               Center(
                 child: Image.asset(
                   song.albumArtPath,
@@ -95,7 +93,6 @@ class _SongDetailsState extends State<SongDetails> {
                 },
               ),
               const SizedBox(height: 16),
-              // --- CHAMP DURÉE MAINTENANT MODIFIABLE ---
               TextFormField(
                 controller: _durationController,
                 decoration: const InputDecoration(
@@ -120,8 +117,7 @@ class _SongDetailsState extends State<SongDetails> {
                       );
                     }
                   } catch (e) {
-                    // Si le format est incorrect (ex: "5:abc"), on ne fait rien
-                    // On pourrait afficher un message d'erreur ici
+                    //
                   }
                 },
               ),
